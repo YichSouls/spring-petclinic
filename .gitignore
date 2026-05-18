@@ -39,9 +39,6 @@ out/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
-.vscode/
-
 ### CSS ###
 _site/
 *.css
