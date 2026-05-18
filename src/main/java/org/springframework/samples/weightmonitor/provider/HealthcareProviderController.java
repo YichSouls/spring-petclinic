@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.weightmonitor.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -68,6 +69,13 @@ public class HealthcareProviderController {
         return ResponseEntity.ok(new ProviderResponse(providers.save(provider)));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProviderResponse> getById(@PathVariable UUID id) {
+        HealthcareProvider provider = providers.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Provider not found"));
+        return ResponseEntity.ok(new ProviderResponse(provider));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         HealthcareProvider provider = providers
@@ -82,7 +90,6 @@ public class HealthcareProviderController {
         String token = jwtService.generateToken(provider);
         return ResponseEntity.ok(Map.of("token", token));
     }
-
 }
 
 // DTO

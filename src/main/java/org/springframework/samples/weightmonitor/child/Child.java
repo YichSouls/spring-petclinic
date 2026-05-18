@@ -12,17 +12,14 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "children")
 public class Child extends Person {
-    @Column
-    @NotBlank
+    @Column(nullable = false)
     private LocalDate birthDate;
 
     public LocalDate getBirthDate() {
@@ -33,8 +30,7 @@ public class Child extends Person {
         this.birthDate = birthDate;
     }
 
-    @Column
-    @NotBlank
+    @Column(nullable = false)
     private Gender gender;
 
     public Gender getGender() {
@@ -45,18 +41,7 @@ public class Child extends Person {
         this.gender = gender;
     }
 
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "child_id")
+    @OneToMany(mappedBy = "child", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @OrderBy("measuredAt DESC")
-    private final List<Measurement> measurements = new ArrayList<>();
-
-    public List<Measurement> getMeasurements() {
-        return measurements;
-    }
-
-    public void addMeasurement(Measurement measurement) {
-        if (measurement.isNew()) {
-            this.measurements.add(measurement);
-        }
-    }
+    private List<Measurement> measurements = new ArrayList<>();
 }

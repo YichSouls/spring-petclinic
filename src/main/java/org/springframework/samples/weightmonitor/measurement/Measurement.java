@@ -2,7 +2,7 @@ package org.springframework.samples.weightmonitor.measurement;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.samples.weightmonitor.child.Child;
 import org.springframework.samples.weightmonitor.model.BaseEntity;
@@ -25,11 +25,27 @@ public class Measurement extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "measurement_provider", joinColumns = @JoinColumn(name = "measurement_id"), inverseJoinColumns = @JoinColumn(name = "provider_id"))
-    private List<HealthcareProvider> providers;
+    private Set<HealthcareProvider> providers;
+
+    public Set<HealthcareProvider> getProviders() {
+        return providers;
+    }
+
+    public void setProviders(Set<HealthcareProvider> providers) {
+        this.providers = providers;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child_id", nullable = true)
     private Child child;
+
+    public Child getChild() {
+        return child;
+    }
+
+    public void setChild(Child child) {
+        this.child = child;
+    }
 
     @Column(nullable = false)
     @DecimalMin("2.0")
@@ -53,5 +69,18 @@ public class Measurement extends BaseEntity {
 
     public void setMeasuredAt(LocalTime measuredAt) {
         this.measuredAt = measuredAt;
+    }
+
+    public static Measurement create(
+            Child child,
+            Set<HealthcareProvider> providers,
+            BigDecimal weight,
+            LocalTime measuredAt) {
+        Measurement m = new Measurement();
+        m.setChild(child);
+        m.setProviders(providers);
+        m.setWeight(weight);
+        m.setMeasuredAt(measuredAt);
+        return m;
     }
 }
