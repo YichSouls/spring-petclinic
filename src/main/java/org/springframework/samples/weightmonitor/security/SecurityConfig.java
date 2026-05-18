@@ -29,8 +29,9 @@ public class SecurityConfig {
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 无状态
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/provider/login", "/provider/register",
-                                "/swagger-ui/**", "/v3/api-docs/**")
+                        .requestMatchers(
+                                "/provider/login", "/provider/register",
+                                "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

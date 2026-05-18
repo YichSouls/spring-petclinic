@@ -4,9 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.samples.petclinic.model.Person;
 import org.springframework.samples.weightmonitor.measurement.Measurement;
 import org.springframework.samples.weightmonitor.model.Gender;
+import org.springframework.samples.weightmonitor.model.Person;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

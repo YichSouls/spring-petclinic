@@ -2,6 +2,7 @@ package org.springframework.samples.weightmonitor.measurement;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.util.List;
 
 import org.springframework.samples.weightmonitor.child.Child;
 import org.springframework.samples.weightmonitor.model.BaseEntity;
@@ -20,20 +21,19 @@ import jakarta.validation.constraints.DecimalMin;
 
 @Entity
 @Table(name = "measurements")
-public class Measurement extends BaseEntity{
+public class Measurement extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "measurement_provider",
-        joinColumns = @JoinColumn(name = "measurement_id"),
-        inverseJoinColumns = @JoinColumn(name = "provider_id"))
-    private HealthcareProvider provider;
+    @JoinTable(name = "measurement_provider", joinColumns = @JoinColumn(name = "measurement_id"), inverseJoinColumns = @JoinColumn(name = "provider_id"))
+    private List<HealthcareProvider> providers;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child_id", nullable = true)
     private Child child;
 
     @Column(nullable = false)
-    @DecimalMin("2.0") @DecimalMax("30.0")
+    @DecimalMin("2.0")
+    @DecimalMax("30.0")
     private BigDecimal weight;
 
     public BigDecimal getWeight() {
