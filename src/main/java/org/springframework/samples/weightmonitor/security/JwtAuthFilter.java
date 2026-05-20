@@ -27,8 +27,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain chain)
+            HttpServletResponse response,
+            FilterChain chain)
             throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
@@ -38,15 +38,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring(7);  // 去掉 "Bearer "
+        String token = authHeader.substring(7); // 去掉 "Bearer "
         String username = jwtService.extractUsername(token);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails user = providers.findByProfessionalId(username).orElseThrow();
             if (jwtService.isTokenValid(token, user)) {
                 // 把认证信息放入 Security Context
-                UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, null,
+                        user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
