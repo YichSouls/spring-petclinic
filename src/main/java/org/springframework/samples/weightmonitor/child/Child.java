@@ -44,4 +44,13 @@ public class Child extends Person {
     @OneToMany(mappedBy = "child", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @OrderBy("measuredAt DESC")
     private List<Measurement> measurements = new ArrayList<>();
+
+    public static Child create(String firstName, String lastName, LocalDate birthDate, Gender gender) {
+        Child c = new Child();
+        c.setFirstName(firstName);
+        c.setLastName(lastName);
+        c.setBirthDate(birthDate);
+        c.setGender(gender);
+        return c;
+    }
 }

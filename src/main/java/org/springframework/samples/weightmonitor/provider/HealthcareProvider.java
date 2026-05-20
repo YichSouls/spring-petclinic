@@ -1,15 +1,21 @@
 package org.springframework.samples.weightmonitor.provider;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.springframework.samples.weightmonitor.measurement.Measurement;
 import org.springframework.samples.weightmonitor.model.Person;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -78,4 +84,7 @@ public class HealthcareProvider extends Person implements UserDetails {
         this.setFirstName(firstName);
         this.setLastName(lastName);
     }
+
+    @ManyToMany(mappedBy = "providers", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private Set<Measurement> measurements = new HashSet<>();
 }

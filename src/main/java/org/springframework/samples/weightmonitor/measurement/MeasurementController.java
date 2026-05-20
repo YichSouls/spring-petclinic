@@ -11,15 +11,18 @@ import org.springframework.samples.weightmonitor.child.Child;
 import org.springframework.samples.weightmonitor.child.ChildRepository;
 import org.springframework.samples.weightmonitor.provider.HealthcareProvider;
 import org.springframework.samples.weightmonitor.provider.HealthcareProviderRepository;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.constraints.NotBlank;
 
-@Controller
+@RestController
 @RequestMapping("/measurement")
 public class MeasurementController {
     private final MeasurementRepository measurements;
@@ -38,7 +41,14 @@ public class MeasurementController {
         this.validator = validator;
     }
 
-    @RequestMapping("/create")
+    @GetMapping("/{id}")
+    public ResponseEntity<Measurement> getById(@PathVariable UUID id) {
+        Measurement measurement = measurements.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Measurement not found"));
+        return ResponseEntity.ok(measurement);
+    }
+
+    @PostMapping("/create")
     public ResponseEntity<MeasurementResponse> createMeasurement(@RequestBody CreateMeasurementRequest request) {
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "request");
         validator.validate(request, errors);
@@ -52,7 +62,8 @@ public class MeasurementController {
         HealthcareProvider provider = providers.findById(UUID.fromString(request.providerId()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Provider not found"));
 
-        Measurement m = Measurement.create(child, Set.of(provider), BigDecimal.valueOf(request.weight()), LocalTime.now());
+        Measurement m = Measurement.create(child, Set.of(provider), BigDecimal.valueOf(request.weight()),
+                LocalTime.now());
         Measurement saved = measurements.save(m);
         return ResponseEntity.status(HttpStatus.CREATED).body(new MeasurementResponse(saved));
     }
